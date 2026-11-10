@@ -137,17 +137,17 @@ export default async function decorate(block) {
 
 ## Environments
 
-URL construction uses `{repo}` and `{owner}` from `gh repo view --json nameWithOwner`; use `git branch` for `{branch}`.
+URL construction uses `rbcroyalbank` and `scdemos` from `gh repo view --json nameWithOwner`; use `git branch` for `{branch}`.
 
 - **Local** (uncommitted code + previewed content): http://localhost:3000/{path}
-- **Preview**: `https://{branch}--{repo}--{owner}.aem.page/{path}`
-- **Live**: `https://main--{repo}--{owner}.aem.live/{path}`
+- **Preview**: `https://{branch}--rbcroyalbank--scdemos.aem.page/{path}`
+- **Live**: `https://main--rbcroyalbank--scdemos.aem.live/{path}`
 
 ## Pull request workflow
 
 1. **Lint passes**: `npm run lint` must pass (CI enforces this)
 2. **Test locally**: Verify at http://localhost:3000
-3. **Push to branch**: `https://{branch}--{repo}--{owner}.aem.page/{path}`
+3. **Push to branch**: `https://{branch}--rbcroyalbank--scdemos.aem.page/{path}`
 4. **Performance**: Run [PageSpeed Insights](https://developers.google.com/speed/pagespeed/insights/) on preview URL; fix until meeting Performance requirement
 5. **Open PR**: Include test URLs (before/after)—PR will be rejected without this. If no existing page demonstrates the change, create test content as static HTML and ask for help copying it to a CMS page.
 6. **Checks pass**: Run `gh pr checks` before requesting review
