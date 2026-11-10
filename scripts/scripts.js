@@ -51,7 +51,10 @@ const THEME_STORAGE_KEY = 'demo-theme';
 function applyTheme(theme) {
   let t = theme ?? (() => { try { return localStorage.getItem(THEME_STORAGE_KEY); } catch (e) { return null; } })();
   if (t !== 'light' && t !== 'dark') {
-    t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const colorScheme = getMetadata('color-scheme');
+    t = colorScheme === 'light' || colorScheme === 'dark'
+      ? colorScheme
+      : matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   }
   document.documentElement.dataset.theme = t;
   document.body.classList.remove('light-scheme', 'dark-scheme');

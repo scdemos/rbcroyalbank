@@ -190,6 +190,8 @@ function initTheme(tools) {
       const s = localStorage.getItem(THEME_KEY);
       if (s === 'light' || s === 'dark') return s;
     } catch (e) { /* ignore */ }
+    const colorScheme = getMetadata('color-scheme');
+    if (colorScheme === 'light' || colorScheme === 'dark') return colorScheme;
     return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
   };
   const set = (s) => {

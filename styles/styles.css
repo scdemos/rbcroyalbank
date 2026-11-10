@@ -42,19 +42,19 @@
   --section-block-space: var(--space-l);
 
   /* color scheme */
-  color-scheme: light dark;
+  color-scheme: light;
 
-  /* heritage palette */
-  --color-rust: #a14f2b;
-  --color-gold: #c5a059;
-  --color-parchment: #f5f2ed;
-  --color-ink: #1a1a1a;
+  /* brand palette */
+  --color-rust: #006ac3;
+  --color-gold: #fedf01;
+  --color-parchment: #fff;
+  --color-ink: #252525;
 
-  /* heritage dark palette */
-  --color-obsidian: #060d0d;
-  --color-card-dark: #162121;
-  --color-rust-bright: #d16a3e;
-  --color-muted: #8b9a9a;
+  /* dark brand palette */
+  --color-obsidian: #003168;
+  --color-card-dark: #0051a5;
+  --color-rust-bright: #0051a5;
+  --color-muted: #585858;
 
   /* color tokens – grays and palette */
   --color-gray-100: #f1f1f1;
@@ -109,15 +109,15 @@
   --color-light: rgb(255 255 255);
   --color-dark: rgb(0 0 0);
   --color-text: light-dark(var(--color-ink), var(--color-parchment));
-  --color-link: light-dark(var(--color-ink), var(--color-parchment));
-  --color-link-hover: light-dark(var(--color-rust), var(--color-gold));
+  --color-link: light-dark(var(--color-rust), var(--color-parchment));
+  --color-link-hover: light-dark(var(--color-rust-bright), var(--color-gold));
   --color-brand: var(--color-rust);
   --color-accent: var(--color-gold);
-  --color-shaded: light-dark(var(--color-parchment), var(--color-card-dark));
+  --color-shaded: light-dark(#f5f7f9, var(--color-card-dark));
 
   /* fonts */
-  --font-family: montserrat, "Trebuchet MS", sans-serif;
-  --font-family-serif: "EB Garamond", georgia, serif;
+  --font-family: roboto, arial, helvetica, sans-serif;
+  --font-family-serif: roboto, arial, helvetica, sans-serif;
   --font-family-mono: "JetBrains Mono", "Courier New", monospace;
   --body-font-family: var(--font-family);
   --heading-font-family: var(--font-family-serif);
@@ -145,6 +145,11 @@
   /* nav / layout */
   --nav-height: 64px;
   --header-height: var(--nav-height);
+  --nav-text-transform: none;
+  --nav-letter-spacing: 0;
+  --footer-logo-filter: brightness(0) invert(1);
+  --border-radius-card: 4px;
+  --h2-accent-display: none;
 
   /* boilerplate compatibility – map to design tokens */
   --background-color: light-dark(var(--color-parchment), var(--color-obsidian));
@@ -155,14 +160,14 @@
   --link-hover-color: var(--color-link-hover);
 
   /* heritage border */
-  --border-heritage: 2px solid light-dark(rgb(161 79 43 / 20%), rgb(245 242 237 / 20%));
-  --border-radius-heritage: 24px;
+  --border-heritage: 1px solid light-dark(rgb(0 0 0 / 16%), rgb(255 255 255 / 20%));
+  --border-radius-heritage: 4px;
 
   /* gradient and glow tokens */
-  --gradient-brand: linear-gradient(135deg, var(--color-rust) 0%, var(--color-gold) 100%);
-  --gradient-brand-dark: linear-gradient(135deg, var(--color-rust-bright) 0%, var(--color-gold) 100%);
-  --shadow-glow-rust: 0 0 40px rgb(161 79 43 / 30%);
-  --shadow-glow-gold: 0 0 40px rgb(197 160 89 / 25%);
+  --gradient-brand: linear-gradient(135deg, var(--color-rust) 0%, var(--color-rust-bright) 100%);
+  --gradient-brand-dark: linear-gradient(135deg, var(--color-rust-bright) 0%, var(--color-obsidian) 100%);
+  --shadow-glow-rust: none;
+  --shadow-glow-gold: none;
   --shadow-lift-m: 0 20px 40px -8px rgb(0 0 0 / 15%);
   --shadow-lift-l: 0 30px 60px -12px rgb(0 0 0 / 22%);
   --shadow-card: 0 2px 8px rgb(0 0 0 / 5%), 0 1px 2px rgb(0 0 0 / 7%);
@@ -262,7 +267,7 @@ html {
 }
 
 ::selection {
-  background: light-dark(rgb(161 79 43 / 20%), rgb(197 160 89 / 30%));
+  background: light-dark(rgb(0 106 195 / 20%), rgb(254 223 1 / 30%));
   color: inherit;
 }
 
@@ -271,11 +276,6 @@ body {
   margin: 0;
   box-sizing: border-box;
   background-color: var(--background-color);
-  background-image:
-    radial-gradient(ellipse 80% 50% at 12% 8%,
-      light-dark(rgb(197 160 89 / 9%), rgb(197 160 89 / 4%)) 0%, transparent 60%),
-    radial-gradient(ellipse 55% 40% at 88% 82%,
-      light-dark(rgb(161 79 43 / 6%), rgb(161 79 43 / 3%)) 0%, transparent 50%);
   color: var(--text-color);
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
@@ -373,7 +373,7 @@ pre {
 
 :not(pre) > code {
   padding: 0.1em 0.35em;
-  background: rgb(161 79 43 / 10%);
+  background: rgb(0 106 195 / 10%);
   border-radius: 4px;
   color: var(--color-rust);
 }
@@ -396,7 +396,7 @@ a:any-link {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
-  text-decoration-color: light-dark(rgb(26 26 26 / 30%), rgb(245 242 237 / 30%));
+  text-decoration-color: light-dark(rgb(26 26 26 / 30%), rgb(255 255 255 / 30%));
   overflow-wrap: break-word;
 }
 
@@ -429,27 +429,15 @@ button.button {
   line-height: 1.2;
   text-align: center;
   text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  text-transform: none;
+  letter-spacing: 0;
   background-color: light-dark(var(--color-rust), var(--color-rust-bright));
-  background-image: linear-gradient(135deg, rgb(255 255 255 / 12%), rgb(0 0 0 / 8%));
+  background-image: none;
   color: var(--color-light);
   cursor: pointer;
-  overflow: hidden;
-  position: relative;
   text-overflow: ellipsis;
   white-space: nowrap;
-  transition: all 0.4s;
-}
-
-a.button:any-link::after,
-button.button::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(105deg, transparent 30%, rgb(255 255 255 / 22%) 50%, transparent 70%);
-  transform: translateX(-120%);
-  transition: transform 0.55s ease;
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
 input,
@@ -471,27 +459,18 @@ a.button:any-link:hover,
 a.button:any-link:focus-visible,
 button.button:hover,
 button.button:focus-visible {
-  background-color: var(--color-gold);
-  border-color: var(--color-gold);
-  transform: translateY(-3px);
-  box-shadow: 0 14px 30px light-dark(rgb(161 79 43 / 30%), rgb(209 106 62 / 35%)), 0 0 0 1px var(--color-gold);
+  background-color: var(--color-rust-bright);
+  border-color: var(--color-rust-bright);
   cursor: pointer;
   text-decoration: none;
-}
-
-a.button:any-link:hover::after,
-a.button:any-link:focus-visible::after,
-button.button:hover::after,
-button.button:focus-visible::after {
-  transform: translateX(120%);
 }
 
 a.button.primary:hover,
 a.button.primary:focus-visible,
 button.button.primary:hover,
 button.button.primary:focus-visible {
-  border-color: var(--color-gold);
-  background-color: var(--color-gold);
+  border-color: var(--color-rust-bright);
+  background-color: var(--color-rust-bright);
   color: var(--color-light);
 }
 
@@ -525,11 +504,9 @@ a.button.secondary:hover,
 a.button.secondary:focus-visible,
 button.button.secondary:hover,
 button.button.secondary:focus-visible {
-  border-color: var(--color-gold);
-  background-color: light-dark(rgb(197 160 89 / 8%), rgb(197 160 89 / 12%));
-  color: var(--color-gold);
-  transform: translateY(-3px);
-  box-shadow: 0 14px 30px light-dark(rgb(197 160 89 / 18%), rgb(197 160 89 / 22%));
+  border-color: var(--color-rust-bright);
+  background-color: light-dark(rgb(0 106 195 / 8%), rgb(0 106 195 / 12%));
+  color: var(--color-rust-bright);
 }
 
 /* main content area – use design tokens for rhythm */
@@ -648,7 +625,7 @@ main > .section.rust * {
 
 main > .section.rust a:any-link {
   color: var(--color-parchment);
-  text-decoration-color: rgb(245 242 237 / 40%);
+  text-decoration-color: rgb(255 255 255 / 40%);
 }
 
 /* section-metadata style=gradient: warm brand gradient full-bleed section */
@@ -704,22 +681,7 @@ main > .section.rust a:any-link {
 
 /* section-metadata style=warm: atmospheric warm tint with heritage diamond mesh */
 main > .section.warm {
-  background-color: light-dark(#f2ead8, #0e1812);
-  background-image:
-    repeating-linear-gradient(
-      45deg,
-      light-dark(rgb(161 79 43 / 4%), rgb(245 242 237 / 2%)) 0,
-      light-dark(rgb(161 79 43 / 4%), rgb(245 242 237 / 2%)) 1px,
-      transparent 1px,
-      transparent 12px
-    ),
-    repeating-linear-gradient(
-      -45deg,
-      light-dark(rgb(161 79 43 / 4%), rgb(245 242 237 / 2%)) 0,
-      light-dark(rgb(161 79 43 / 4%), rgb(245 242 237 / 2%)) 1px,
-      transparent 1px,
-      transparent 12px
-    );
+  background-color: var(--color-shaded);
   margin: 0;
   padding: var(--space-3xl, var(--section-block-space)) 0;
 }
