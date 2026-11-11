@@ -1,4 +1,5 @@
 /* Hero block – Heritage Elite, mobile-first */
+/* stylelint-disable no-descending-specificity -- hero variants intentionally override base styles by class and breakpoint */
 
 .hero-container .hero-wrapper {
   max-width: unset;
@@ -6,34 +7,28 @@
 }
 
 .hero {
-  position: relative;
-  background-color: light-dark(var(--color-parchment), var(--color-obsidian));
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-obsidian);
+  color: var(--color-parchment);
 }
 
-/* Image */
-.hero > div:first-child {
-  position: relative;
+.hero:not(.gold, .ink, .rust, .carousel) {
+  background: linear-gradient(180deg, var(--color-obsidian) 0%, var(--color-rust) 100%);
+}
+
+.hero:not(.carousel) > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   line-height: 0;
+  padding: var(--space-l) var(--content-padding-inline) 0;
 }
 
 .hero .hero-img-light,
 .hero .hero-img-dark {
   line-height: 0;
 }
-
-/* Gradient fade effect at the bottom of the hero image */
-.hero > div:first-child::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 65%;
-  background: linear-gradient(to bottom, transparent 0%, light-dark(var(--color-parchment), var(--color-obsidian)) 100%);
-  pointer-events: none;
-  z-index: 1;
-}
-
 
 /* Dual-image hero: light shown by default, dark hidden */
 .hero .hero-img-dark {
@@ -51,34 +46,34 @@
   display: block;
 }
 
-.hero picture img {
+.hero:not(.carousel) picture img {
   display: block;
   width: 100%;
-  max-height: 580px;
-  object-fit: cover;
-  opacity: 0.55;
+  max-width: 300px;
+  max-height: 280px;
+  object-fit: contain;
+  opacity: 1;
 }
 
-/* Text overlay */
-.hero > div:last-child {
-  position: absolute;
-  inset: 0;
+.hero:not(.carousel) > div:last-child {
+  position: static;
   z-index: 2;
-  padding: 40px var(--content-padding-inline);
+  padding: var(--space-m) var(--content-padding-inline) var(--space-xl);
   display: flex;
-  align-items: center;
+  align-items: stretch;
 }
 
-.hero > div:last-child > div {
+.hero:not(.carousel) > div:last-child > div {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-m);
+  width: 100%;
   max-width: 600px;
 }
 
 /* Hide the second image row when hero block decoration hasn't run (Target offer injection) */
-.hero > div:nth-child(2):not(.hero-img-dark, .hero-img-light, .hero-text) {
+.hero:not(.carousel) > div:nth-child(2):not(.hero-img-dark, .hero-img-light, .hero-text) {
   display: none;
 }
 
@@ -103,7 +98,7 @@
     animation: hero-enter 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.05s both;
   }
 
-  .hero h1 {
+  .hero :is(h1, h2) {
     animation: hero-enter 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
   }
 
@@ -114,26 +109,31 @@
 
 /* Tagline */
 .hero .hero-tagline {
-  font-family: var(--font-family-mono);
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: var(--color-gold);
-  text-transform: uppercase;
-  letter-spacing: 5px;
+  align-self: flex-start;
+  width: fit-content;
   margin: 0;
+  border-radius: 3px;
+  padding: 2px 10px;
+  background: #ffc72c;
+  color: #252525;
+  font-family: var(--body-font-family);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-transform: uppercase;
 }
 
 /* Heading */
-.hero h1 {
+.hero :is(h1, h2) {
   margin: 0;
   font-family: var(--font-family-serif);
-  font-size: clamp(2rem, 8vw, 4.5rem);
+  font-size: 24px;
   font-weight: 500;
-  line-height: 1.05;
-  color: light-dark(var(--color-ink), var(--color-parchment));
+  line-height: 1.25;
+  color: var(--color-parchment);
 }
 
-.hero h1 em {
+.hero :is(h1, h2) em {
   font-weight: 400;
   font-style: italic;
   background: linear-gradient(135deg, var(--color-rust) 0%, var(--color-gold) 100%);
@@ -141,27 +141,32 @@
   color: transparent;
 }
 
-.dark-scheme .hero h1 em,
-:root[data-theme='dark'] .hero h1 em {
+.dark-scheme .hero :is(h1, h2) em,
+:root[data-theme='dark'] .hero :is(h1, h2) em {
   background: linear-gradient(135deg, var(--color-rust-bright) 0%, var(--color-gold) 100%);
   background-clip: text;
   color: transparent;
 }
 
-/* Body text — hidden on mobile */
+/* Body text */
 .hero p:not(.button-container, .hero-tagline) {
-  display: none;
+  display: block;
   max-width: 550px;
   margin: 0;
-  font-family: var(--font-family-serif);
-  font-size: 1.15rem;
-  color: light-dark(var(--color-ink), var(--color-muted));
-  line-height: 1.7;
-  letter-spacing: 0.01em;
+  font-family: var(--body-font-family);
+  font-size: 16px;
+  color: var(--color-parchment);
+  line-height: 1.5;
 }
 
 .hero p.button-container {
   margin-top: var(--space-s);
+  width: 100%;
+}
+
+.hero p.button-container a {
+  width: 100%;
+  text-align: center;
 }
 
 /* Icon */
@@ -192,35 +197,75 @@
 
 /* Tablet: show body text */
 @media (width >= 600px) {
+  .hero:not(.carousel) > div:first-child {
+    padding-top: var(--space-2xl);
+  }
+
+  .hero:not(.carousel) picture img {
+    max-height: 340px;
+  }
+
+  .hero:not(.carousel) :is(h1, h2) {
+    font-size: 30px;
+  }
+
   .hero p:not(.button-container, .hero-tagline) {
-    display: block;
-    font-size: 1.3rem;
+    font-size: 16px;
   }
 }
 
 /* Desktop */
 @media (width >= 900px) {
-  .hero > div:last-child {
-    padding: 100px 5vw;
+  .hero:not(.carousel) {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    align-items: center;
   }
 
-  .hero > div:last-child > div {
-    max-width: 1000px;
-    margin: 0 25%;
+  .hero:not(.gold, .ink, .rust, .carousel) {
+    background: linear-gradient(90deg, #003168 0%, #8db2d6 50%, #c5e3f8 62%, #c5e3f8 100%);
   }
 
-  .hero h1 {
-    font-size: clamp(3.5rem, 5vw, 6rem);
+  .hero:not(.carousel) > div:first-child {
+    grid-column: 2;
+    grid-row: 1;
+    min-height: 440px;
+    padding: var(--space-2xl) max(var(--space-xl), calc((100vw - 1140px) / 2)) var(--space-2xl) var(--space-xl);
   }
+
+  .hero:not(.carousel) > div:last-child {
+    grid-column: 1;
+    grid-row: 1;
+    padding: var(--space-2xl) var(--space-xl) var(--space-2xl) max(var(--space-xl), calc((100vw - 1140px) / 2));
+  }
+
+  .hero:not(.carousel) > div:last-child > div {
+    max-width: 560px;
+    margin: 0;
+  }
+
+  .hero:not(.carousel) picture img {
+    max-width: 470px;
+    max-height: 360px;
+  }
+
+  .hero:not(.carousel) :is(h1, h2) {
+    font-size: 36px;
+  }
+
+  .hero:not(.carousel) p.button-container {
+    width: auto;
+  }
+
+  .hero:not(.carousel) p.button-container a {
+    width: auto;
+  }
+
 }
 
 @media (width >= 1200px) {
-  .hero > div:last-child {
-    padding: 100px 6vw;
-  }
-
-  .hero h1 {
-    font-size: clamp(4rem, 5.5vw, 6.5rem);
+  .hero:not(.carousel) > div:first-child {
+    min-height: 500px;
   }
 }
 
@@ -259,13 +304,13 @@
   background-color: var(--color-rust);
 }
 
-.hero.rust h1,
+.hero.rust :is(h1, h2),
 .hero.rust p:not(.button-container, .hero-tagline) {
   color: var(--color-parchment);
 }
 
 /* Variant heros: reset gradient text and use solid color */
-:root .hero.rust h1 em {
+:root .hero.rust :is(h1, h2) em {
   background: none;
   background-clip: unset;
   color: var(--color-gold);
@@ -275,7 +320,7 @@
   background-color: var(--color-gold);
 }
 
-.hero.gold h1,
+.hero.gold :is(h1, h2),
 .hero.gold p:not(.button-container, .hero-tagline) {
   color: var(--color-ink);
 }
@@ -284,13 +329,217 @@
   background-color: var(--color-ink);
 }
 
-.hero.ink h1,
+.hero.ink :is(h1, h2),
 .hero.ink p:not(.button-container, .hero-tagline) {
   color: var(--color-parchment);
 }
 
-:root .hero.ink h1 em {
+:root .hero.ink :is(h1, h2) em {
   background: none;
   background-clip: unset;
   color: var(--color-rust);
+}
+
+.hero:not(.gold) a.button.secondary:any-link {
+  border-color: var(--color-light);
+  background: transparent;
+  color: var(--color-light);
+}
+
+/* split: light band, dark copy left, photo bleeding to the right edge */
+.hero.split {
+  background: var(--color-shaded);
+  color: var(--color-ink);
+}
+
+.hero.split > div:first-child {
+  padding: 0;
+}
+
+.hero.split picture img {
+  width: 100%;
+  max-width: none;
+  height: 220px;
+  max-height: none;
+  object-fit: cover;
+}
+
+.hero:is(.split, .cover):not(.carousel) :is(h1, h2),
+.hero:is(.split, .cover):not(.carousel) p:not(.button-container, .hero-tagline) {
+  color: var(--color-ink);
+}
+
+.hero:is(.split, .cover):not(.carousel) a.button.secondary:any-link {
+  border-color: var(--color-rust);
+  background: var(--color-light);
+  color: var(--color-rust);
+}
+
+/* cover: photo fills the band, copy centered on top */
+.hero.cover:not(.carousel) {
+  position: relative;
+  background: var(--color-shaded);
+}
+
+/* mobile: photo above the copy; desktop: photo behind it */
+.hero.cover:not(.carousel) > div:first-child {
+  height: 220px;
+  padding: 0;
+}
+
+.hero.cover:not(.carousel) > div:first-child > div,
+.hero.cover:not(.carousel) picture {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.hero.cover:not(.carousel) picture img {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  object-fit: cover;
+}
+
+/* cover start: banners are drawn for a left-anchored crop (copy on the empty left side) */
+.hero.cover.start picture img {
+  object-position: left center;
+}
+
+.hero.cover:not(.carousel) > div:last-child {
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-2xl) var(--content-padding-inline);
+}
+
+.hero.cover:not(.carousel) > div:last-child > div {
+  align-items: center;
+  max-width: 760px;
+  text-align: center;
+}
+
+.hero.cover:not(.carousel) .hero-tagline {
+  align-self: center;
+}
+
+/* cover panel: copy in a brand box on the left instead of centered */
+.hero.cover.panel > div:last-child {
+  justify-content: flex-start;
+}
+
+.hero.cover.panel > div:last-child > div {
+  align-items: flex-start;
+  max-width: 300px;
+  padding: var(--space-l);
+  background: var(--color-rust);
+  text-align: start;
+}
+
+.hero.cover.panel :is(h1, h2),
+.hero.cover.panel p:not(.button-container, .hero-tagline) {
+  color: var(--color-light);
+}
+
+.hero.cover.panel :is(h1, h2) {
+  font-size: 18px;
+  font-family: var(--body-font-family);
+}
+
+@media (width >= 900px) {
+  .hero.split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .hero.split > div:first-child {
+    align-self: stretch;
+    align-items: stretch;
+    min-height: 440px;
+    padding: 0;
+  }
+
+  .hero.split > div:first-child > div,
+  .hero.split picture,
+  .hero.split picture img {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+  }
+
+  .hero.split picture {
+    display: block;
+  }
+
+  .hero.cover:not(.carousel) {
+    display: flex;
+    min-height: 440px;
+  }
+
+  /* centered cover heroes are tall feature banners on the source */
+  .hero.cover:not(.carousel, .start, .panel) {
+    min-height: 600px;
+  }
+
+  .hero.cover:not(.carousel) > div:first-child {
+    position: absolute;
+    inset: 0;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+  }
+
+  .hero.cover:not(.carousel) > div:last-child {
+    box-sizing: border-box;
+    width: 100%;
+    padding: var(--space-2xl) max(var(--space-xl), calc((100vw - 1140px) / 2));
+  }
+
+  .hero.cover:not(.carousel) > div:last-child > div {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .hero.cover.panel > div:last-child > div {
+    max-width: 300px;
+    margin: 0;
+  }
+
+  .hero.cover:not(.panel, .carousel) :is(h1, h2) {
+    font-size: 48px;
+  }
+}
+
+/* cover start: copy stays left-aligned over the photo */
+.hero.cover.start > div:last-child {
+  justify-content: flex-start;
+}
+
+.hero.cover.start > div:last-child > div {
+  align-items: flex-start;
+  max-width: 560px;
+  text-align: start;
+}
+
+@media (width >= 900px) {
+  .hero.cover.start > div:last-child > div {
+    margin: 0;
+  }
+
+  .hero.cover.start :is(h1, h2) {
+    font-size: 32px;
+  }
+}
+
+/* consecutive CTAs sit side by side */
+.hero .hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-s);
+}
+
+.hero .hero-buttons p.button-container {
+  width: auto;
+  margin: 0;
 }

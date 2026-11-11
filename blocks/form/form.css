@@ -1,10 +1,6 @@
-/* Contact-style form layout (inspired by contact-us pattern) */
-main .form-container {
-  max-width: min(var(--grid-container-width), 860px);
-  width: 100%;
-  margin: 0 auto;
-  padding: var(--space-l) var(--content-padding-inline);
-  box-sizing: border-box;
+/* Contact-style form layout; the block narrows itself, never its section */
+main .form {
+  max-width: 860px;
 }
 
 main .form-container .form-wrapper {
@@ -44,8 +40,8 @@ main .form form {
   scroll-margin: 1em;
   width: 100%;
   min-width: 0;
-  border: 1px solid light-dark(rgb(26 26 26 / 20%), rgb(255 255 255 / 20%));
-  border-radius: 8px;
+  border: 1px solid light-dark(#8a8a8a, rgb(255 255 255 / 30%));
+  border-radius: 0;
   padding: 12px 14px;
   background: light-dark(var(--color-light), rgb(0 49 104 / 60%));
   color: inherit;
@@ -224,7 +220,7 @@ main .form form {
   margin-top: var(--space-s);
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: var(--space-s);
 }
 
@@ -234,9 +230,9 @@ main .form form {
 }
 
 .form .button-wrapper button.button {
-  border-radius: 8px;
+  border-radius: 0;
   padding: 12px 24px;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s;
 }

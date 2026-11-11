@@ -117,20 +117,22 @@
 
   /* fonts */
   --font-family: roboto, arial, helvetica, sans-serif;
-  --font-family-serif: roboto, arial, helvetica, sans-serif;
+
+  /* RBCDisplay is not bundled; nearest humanist display faces, Roboto last */
+  --font-family-serif: optima, candara, 'Segoe UI', roboto, arial, sans-serif;
   --font-family-mono: "JetBrains Mono", "Courier New", monospace;
   --body-font-family: var(--font-family);
   --heading-font-family: var(--font-family-serif);
 
   /* heading sizes */
-  --heading-font-size-xxl: 32.44px;
-  --heading-font-size-xl: 28.83px;
-  --heading-font-size-l: 25.63px;
-  --heading-font-size-m: 22.78px;
-  --heading-font-size-s: 20.25px;
-  --heading-font-size-xs: 18px;
-  --heading-font-size-xxs: 16px;
-  --heading-line-height: 1.15;
+  --heading-font-size-xxl: 28px;
+  --heading-font-size-xl: 24px;
+  --heading-font-size-l: 22px;
+  --heading-font-size-m: 20px;
+  --heading-font-size-s: 18px;
+  --heading-font-size-xs: 16px;
+  --heading-font-size-xxs: 14px;
+  --heading-line-height: 1.2;
 
   /* body sizes */
   --body-font-size-xxxl: 25px;
@@ -140,7 +142,7 @@
   --body-font-size-m: 16px;
   --body-font-size-s: 14px;
   --body-font-size-xs: 12px;
-  --body-line-height: 1.6;
+  --body-line-height: 1.5;
 
   /* nav / layout */
   --nav-height: 64px;
@@ -191,8 +193,8 @@
 @media (width >= 600px) {
   :root,
   :host {
-    --heading-font-size-xxl: 44px;
-    --heading-font-size-xl: 36px;
+    --heading-font-size-xxl: 32px;
+    --heading-font-size-xl: 28px;
     --content-padding-inline: var(--space-l);
     --main-block-space: var(--space-xl);
     --section-block-space: var(--space-xl);
@@ -202,14 +204,11 @@
 @media (width >= 900px) {
   :root,
   :host {
-    --body-font-size-m: 18px;
-    --body-font-size-s: 16px;
-    --body-font-size-xs: 14px;
-    --heading-font-size-xxl: 64px;
-    --heading-font-size-xl: 48px;
-    --heading-font-size-l: 32px;
+    --heading-font-size-xxl: 40px;
+    --heading-font-size-xl: 36px;
+    --heading-font-size-l: 28px;
     --heading-font-size-m: 24px;
-    --heading-font-size-s: 20px;
+    --heading-font-size-s: 18px;
     --heading-font-size-xs: 18px;
     --content-padding-inline: var(--space-xl);
     --section-block-space: var(--space-3xl);
@@ -219,7 +218,7 @@
 @media (width >= 1200px) {
   :root,
   :host {
-    --grid-container-width: 1200px;
+    --grid-container-width: 1140px;
   }
 }
 
@@ -296,6 +295,17 @@ header {
   height: var(--nav-height);
 }
 
+/* layered header: reserve its final height before the nav loads (no layout shift) */
+html:has(meta[name='nav-layout'][content='layered' i]) header {
+  height: 60px;
+}
+
+@media (width >= 900px) {
+  html:has(meta[name='nav-layout'][content='layered' i]) header {
+    height: 160px;
+  }
+}
+
 header .header,
 footer .footer {
   visibility: hidden;
@@ -323,12 +333,10 @@ h6 {
 
 h1 {
   font-size: var(--heading-font-size-xxl);
-  letter-spacing: -0.02em;
 }
 
 h2 {
   font-size: var(--heading-font-size-xl);
-  letter-spacing: -0.015em;
 }
 
 h3 { font-size: var(--heading-font-size-m); }
@@ -338,7 +346,7 @@ h6 { font-size: var(--heading-font-size-xxs); }
 
 @media (width >= 600px) {
   h3 { font-size: var(--heading-font-size-l); }
-  h4 { font-size: var(--heading-font-size-m); }
+  h4 { font-size: var(--heading-font-size-s); }
   h5 { font-size: var(--heading-font-size-s); }
 }
 
@@ -421,12 +429,14 @@ button.button {
   max-width: 100%;
   margin: 0;
   border: 1px solid light-dark(var(--color-rust), var(--color-rust-bright));
-  border-radius: 4px;
-  padding: 20px 50px;
+  border-radius: 0;
+  min-height: 46px;
+  padding: 12px 20px;
   font: inherit;
-  font-weight: 700;
-  font-size: 0.85rem;
-  line-height: 1.2;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 1.25;
   text-align: center;
   text-decoration: none;
   text-transform: none;
@@ -509,6 +519,34 @@ button.button.secondary:focus-visible {
   color: var(--color-rust-bright);
 }
 
+/* a plain standalone link (not bold/italic) is a chevron text link, as on the customer site */
+main a.button:any-link:not(.primary, .secondary),
+main a.button:any-link:not(.primary, .secondary):hover {
+  min-height: 0;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: var(--link-color);
+  font-weight: 400;
+  white-space: normal;
+  text-align: start;
+}
+
+main a.button:any-link:not(.primary, .secondary)::after {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  margin-inline-start: 4px;
+  border-top: 1.5px solid currentcolor;
+  border-right: 1.5px solid currentcolor;
+  transform: rotate(45deg);
+}
+
+main a.button:any-link:not(.primary, .secondary):hover {
+  text-decoration: underline;
+}
+
 /* main content area – use design tokens for rhythm */
 main > div {
   margin: var(--main-block-space) var(--content-padding-inline);
@@ -545,10 +583,15 @@ main .icon.icon-logo {
   margin-bottom: 4px;
 }
 
-/* Reserve space for unsized images to reduce CLS */
+/* Reserve space for unsized images to reduce CLS; the natural ratio wins once loaded, so logos and icons are never cropped */
 main img:not([width], [height]) {
-  aspect-ratio: 16 / 9;
-  object-fit: cover;
+  aspect-ratio: auto 16 / 9;
+}
+
+/* a lone image right above a heading is an eyebrow logo, not a banner */
+main .default-content-wrapper > p:has(> picture:only-child):has(+ :is(h1, h2, h3)) img {
+  width: auto;
+  max-height: 64px;
 }
 
 /* sections – boilerplate structure with design tokens */
@@ -577,7 +620,355 @@ article.article-body > .section > div {
   padding: 0 var(--content-padding-inline);
 }
 
+/* stylelint-disable no-descending-specificity -- section styles are independent modifiers layered on the base section rules */
+
 /* section metadata */
+main > .section.center > .default-content-wrapper {
+  text-align: center;
+}
+
+main > .section.center > .default-content-wrapper > p:not(.button-container) {
+  max-width: 760px;
+  margin-inline: auto;
+}
+
+main > .section.page-title h1 {
+  margin: var(--space-l) 0;
+  color: var(--color-rust);
+}
+
+/* page-title: a paragraph before the H1 is the breadcrumb trail */
+main > .section.page-title .default-content-wrapper > p:has(+ h1) {
+  margin: var(--space-m) 0 0;
+  font-size: 13px;
+}
+
+/* overlap: the section's content is a raised card pulled up into the section above */
+main > .section.overlap {
+  position: relative;
+  z-index: 1;
+}
+
+main > .section.overlap > div {
+  box-sizing: border-box;
+  border-radius: 8px;
+  padding: var(--space-xl) var(--space-l);
+  background: var(--background-color);
+  box-shadow: 0 2px 12px rgb(0 0 0 / 10%);
+}
+
+@media (width >= 900px) {
+  main > .section.overlap {
+    margin-top: -120px;
+    padding-top: 0;
+  }
+
+  main > .section.overlap > div {
+    max-width: calc(var(--grid-container-width) + 2 * var(--space-xl));
+    padding: var(--space-2xl) 60px;
+  }
+
+  main > .section:has(+ .section.overlap) .hero:not(.cover) > div {
+    min-height: 0;
+    padding-bottom: 150px;
+  }
+}
+
+/* overlap panel: the pulled-up content continues the brand box of a `hero cover panel` */
+main > .section.overlap.panel > div {
+  border-radius: 0;
+  padding: 0 var(--space-l) var(--space-l);
+  background: var(--color-rust);
+  box-shadow: none;
+  color: var(--color-light);
+}
+
+main > .section.overlap.panel :is(label, legend, p) {
+  color: var(--color-light);
+}
+
+main > .section.overlap.panel .form :is(fieldset, form) {
+  margin: 0;
+  border: 0;
+  padding: 0;
+}
+
+@media (width >= 900px) {
+  main > .section.overlap.panel {
+    min-height: 305px;
+    margin-top: -305px;
+  }
+
+  main > .section.overlap.panel > div {
+    max-width: 348px;
+    margin-inline: max(var(--space-xl), calc((100vw - 1140px) / 2)) auto;
+    padding: 0 var(--space-l) var(--space-l);
+  }
+
+  main > .section:has(+ .section.overlap.panel) .hero.cover.panel > div:last-child {
+    align-items: flex-start;
+    padding-top: 64px;
+  }
+
+  main > .section:has(+ .section.overlap.panel) .hero.cover.panel > div:last-child > div {
+    padding-bottom: var(--space-s);
+  }
+}
+
+/* backdrop: a picture-only paragraph fills the band, the rest sits in a white panel (end: panel on the right) */
+main > .section.backdrop {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 80px 0;
+}
+
+main > .section.backdrop p:has(> picture:only-child) {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  margin: 0;
+}
+
+main > .section.backdrop p:has(> picture:only-child) :is(picture, img) {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+main > .section.backdrop > div {
+  box-sizing: border-box;
+  max-width: 560px;
+  margin-inline: auto;
+  padding-inline: var(--space-l);
+  background: var(--color-light);
+}
+
+main > .section.backdrop > div:first-child {
+  padding-top: var(--space-l);
+}
+
+main > .section.backdrop > div:last-child {
+  padding-bottom: var(--space-l);
+}
+
+@media (width >= 900px) {
+  main > .section.backdrop.end > div {
+    margin-inline: auto max(var(--space-xl), calc((100vw - 1140px) / 2));
+  }
+
+  main > .section.backdrop.start > div {
+    margin-inline: max(var(--space-xl), calc((100vw - 1140px) / 2)) auto;
+  }
+}
+
+main > .section.backdrop > div:has(> p:only-child > picture:only-child) {
+  padding: 0;
+  background: none;
+}
+
+main > .section.backdrop > div:has(+ div > p:only-child > picture:only-child) {
+  padding-bottom: var(--space-l);
+}
+
+/* side-intro: intro copy in a narrow left column, the block beside it runs to the viewport's right edge */
+main > .section.side-intro .default-content-wrapper p:has(> picture:only-child) {
+  display: inline-block;
+  margin: 0 0 var(--space-m);
+  border-bottom: 4px solid var(--color-gold);
+  padding-bottom: var(--space-s);
+}
+
+main > .section.side-intro .default-content-wrapper p:has(> picture:only-child) img {
+  display: block;
+  width: 200px;
+  height: auto;
+}
+
+main > .section.side-intro .default-content-wrapper h2 {
+  color: var(--color-rust);
+}
+
+@media (width >= 900px) {
+  main > .section.side-intro {
+    display: grid;
+    grid-template-columns: minmax(0, 400px) minmax(0, 1fr);
+    column-gap: 140px;
+    align-items: center;
+    overflow: hidden;
+    padding-left: max(var(--space-xl), calc((100vw - 1200px) / 2));
+  }
+
+  main > .section.side-intro > div {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  main > .section.side-intro .default-content-wrapper h2 {
+    font-size: 44px;
+    line-height: 1.2;
+  }
+
+  main > .section.side-intro .carousel .carousel-track {
+    margin-inline-end: 0;
+  }
+}
+
+/* texture: a picture-only paragraph becomes a decorative image at natural size, anchored bottom-right behind the section */
+main > .section.texture {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+main > .section.texture p:has(> picture:only-child):last-child {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  max-width: none;
+  margin: 0;
+}
+
+main > .section.texture p:has(> picture:only-child):last-child img {
+  display: block;
+  width: auto;
+  max-width: none;
+  height: auto;
+}
+
+main > .section.texture > div:has(> p:only-child > picture:only-child) {
+  padding: 0;
+}
+
+/* notice: slim information band at the top of the page */
+main > .section.notice {
+  margin: 0;
+  padding: var(--space-s) 0;
+  background: #e1f0fb;
+  font-size: var(--body-font-size-xs);
+}
+
+main > .section.notice p {
+  margin: 0;
+}
+
+/* boxed: the section's text sits in an outlined panel */
+main > .section.boxed > .default-content-wrapper {
+  box-sizing: border-box;
+  border: 1px solid var(--color-gray-200);
+  padding: var(--space-l);
+  background: #f9fafb;
+}
+
+/* steps: a heading bar over a numbered list that reads across on desktop */
+main .section.steps > .default-content-wrapper {
+  box-sizing: border-box;
+  border: 1px solid var(--color-gray-200);
+  padding: 0;
+  background: var(--color-light);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 6%);
+}
+
+main .section.steps h3 {
+  margin: 0;
+  padding: var(--space-m);
+  background: #fcb900;
+  text-align: center;
+}
+
+main .section.steps ol {
+  display: grid;
+  gap: var(--space-l);
+  margin: 0;
+  padding: var(--space-l);
+  list-style: none;
+  counter-reset: step;
+}
+
+main .section.steps ol > li {
+  counter-increment: step;
+  font-size: var(--body-font-size-s);
+}
+
+main .section.steps ol > li strong {
+  display: flex;
+  align-items: center;
+  gap: var(--space-s);
+  margin-bottom: var(--space-s);
+  font-family: var(--heading-font-family);
+  font-size: var(--heading-font-size-m);
+  font-weight: 400;
+}
+
+main .section.steps ol > li strong::before {
+  content: counter(step);
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid currentcolor;
+  border-radius: 50%;
+  font-size: var(--body-font-size-m);
+}
+
+main .section.steps > .default-content-wrapper > p {
+  padding: 0 var(--space-l) var(--space-l);
+}
+
+@media (width >= 900px) {
+  main .section.steps ol {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* anchors: a list of in-page links reads as an underlined tab strip */
+main > .section.anchors ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 var(--space-l);
+  margin: 0;
+  border-bottom: 1px solid var(--color-gray-200);
+  padding: 0;
+  list-style: none;
+}
+
+main > .section.anchors li a:any-link {
+  display: block;
+  padding: var(--space-s) 0;
+  color: var(--color-text);
+  font-size: var(--body-font-size-s);
+  text-decoration: none;
+}
+
+main > .section.anchors li a:any-link:hover {
+  color: var(--link-color);
+  box-shadow: inset 0 -2px 0 var(--color-rust);
+}
+
+/* navy: deep brand-blue band with light headings */
+main .section.navy {
+  margin: 0;
+  padding: var(--section-block-space) 0;
+  background: linear-gradient(180deg, var(--color-obsidian) 0%, #0051a5 100%);
+}
+
+main .section.navy > .default-content-wrapper :is(h2, h3, p) {
+  color: var(--color-light);
+}
+
+main .section.navy a.button.primary:any-link {
+  border-color: var(--color-light);
+  background: var(--color-light);
+  color: var(--color-rust);
+}
+
 main .section.light,
 main .section.highlight {
   background-color: var(--light-color);
@@ -696,4 +1087,36 @@ main > .section.warm {
 /* hide library metadata from being seen in block library */
 .library-metadata-wrapper {
   display: none;
+}
+
+/* chips: a list of links renders as pill filters */
+main > .section.chips ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: inherit;
+  gap: var(--space-s);
+  padding: 0;
+  list-style: none;
+}
+
+main > .section.center.chips ul {
+  justify-content: center;
+}
+
+main > .section.chips li a:any-link {
+  display: inline-block;
+  border: 1px solid var(--color-rust);
+  border-radius: 24px;
+  padding: 8px 20px;
+  color: var(--color-rust);
+  text-decoration: none;
+}
+
+main > .section.chips li a:hover {
+  background: var(--color-rust);
+  color: var(--color-light);
+}
+
+main > .section.page-title .default-content-wrapper > p:has(+ h1) a:any-link {
+  text-decoration: underline;
 }

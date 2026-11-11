@@ -1,3 +1,4 @@
+/* stylelint-disable no-descending-specificity -- variants override the base column rules */
 .columns > div {
   display: flex;
   flex-direction: column;
@@ -7,6 +8,15 @@
 .columns img {
   width: 100%;
   border-radius: 12px;
+}
+
+/* linked badges (app stores) sit inline at button height */
+.columns p > a > img,
+.columns p > a > picture img {
+  display: inline-block;
+  width: auto;
+  height: 44px;
+  border-radius: 0;
 }
 
 .columns > div > div {
@@ -19,6 +29,13 @@
 
 .columns > div > .columns-img-col img {
   display: block;
+
+  /* image-only column: keep authored art at its natural size */
+  width: auto;
+  max-width: 100%;
+  max-height: 400px;
+  margin-inline: auto;
+  border-radius: 0;
 }
 
 .columns > div > div :is(h2, h3) {
@@ -40,4 +57,67 @@
     flex: 1;
     order: unset;
   }
+}
+
+
+
+/* banner: one rounded brand-blue box, picture flush to the bottom edge */
+.columns.banner > div {
+  overflow: hidden;
+  border-radius: 4px;
+  padding: var(--space-l) var(--space-l) 0;
+  background: linear-gradient(135deg, #0051a5 0%, #006ac3 100%);
+  color: var(--color-light);
+}
+
+.columns.banner :is(h2, h3, p) {
+  color: var(--color-light);
+}
+
+.columns.banner > div > .columns-img-col {
+  align-self: flex-end;
+}
+
+.columns.banner > div > .columns-img-col img {
+  max-height: 280px;
+  vertical-align: bottom;
+}
+
+@media (width >= 900px) {
+  .columns.banner > div {
+    align-items: stretch;
+    padding: 0 var(--space-xl);
+  }
+
+  .columns.banner > div > div:not(.columns-img-col) {
+    flex: 2;
+    padding: var(--space-xl) 0;
+  }
+}
+
+/* tiles: every column is a padded tile; the second one is brand blue */
+.columns.tiles > div {
+  align-items: stretch;
+}
+
+.columns.tiles > div > div {
+  box-sizing: border-box;
+  padding: var(--space-xl);
+  background: #f3f4f6;
+  text-align: center;
+}
+
+.columns.tiles > div > div:nth-child(2) {
+  background: linear-gradient(135deg, #0051a5 0%, #006ac3 100%);
+  text-align: start;
+}
+
+.columns.tiles > div > div:nth-child(2) :is(h2, h3, p, a:any-link) {
+  color: var(--color-light);
+}
+
+.columns.tiles img {
+  width: auto;
+  max-height: 100px;
+  border-radius: 0;
 }

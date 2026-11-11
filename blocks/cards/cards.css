@@ -1,4 +1,5 @@
 /* Default cards */
+/* stylelint-disable no-descending-specificity -- variants intentionally override base card/slide/panel rules */
 
 .cards > ul {
   list-style: none;
@@ -24,9 +25,7 @@
 }
 
 .cards > ul > li:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 24px 48px light-dark(rgb(0 106 195 / 18%), rgb(254 223 1 / 18%));
-  border-color: light-dark(var(--color-gold), rgb(254 223 1 / 45%));
+  box-shadow: 0 8px 24px light-dark(rgb(0 0 0 / 12%), rgb(0 0 0 / 50%));
 }
 
 /* Article wrapper — layout-invisible so the card link remains the direct flex child */
@@ -61,7 +60,14 @@
 }
 
 .cards > ul > li:hover .cards-card-image img {
-  transform: scale(1.05);
+  transform: none;
+}
+
+/* plain photo cards (no variant) use a wide crop */
+.cards:not(.text, .icons, .boxed, .mosaic, .showcase, .tiles, .plain, .rows, .headed, .product, .filter, .links, .bento) .cards-card-image img {
+  width: 100%;
+  aspect-ratio: 368 / 150;
+  object-fit: cover;
 }
 
 /* Body */
@@ -92,7 +98,7 @@
 /* Desktop */
 @media (width >= 900px) {
   .cards > ul {
-    grid-template-columns: repeat(auto-fill, minmax(257px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(257px, 1fr));
   }
 
   .cards .cards-card-body {
@@ -252,5 +258,753 @@
 
   .cards.bento .cards-card-featured .cards-card-image {
     max-height: 300px;
+  }
+}
+
+/* ==========================================================================
+   Product variant: coloured head, pill label, checklist, price, CTAs
+   ========================================================================== */
+
+.cards.product > ul {
+  max-width: 420px;
+  gap: var(--space-l);
+}
+
+.cards.product > ul > li {
+  border-color: light-dark(#b3b3b3, rgb(255 255 255 / 20%));
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.cards.product .cards-card-body {
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--space-l) var(--space-l);
+  text-align: center;
+}
+
+.cards.product .cards-product-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 calc(-1 * var(--space-l)) var(--space-l);
+  padding: var(--space-m) var(--space-l) 0;
+  background: light-dark(#e3f2fc, rgb(0 106 195 / 25%));
+}
+
+.cards.product > ul > li:first-child .cards-product-head {
+  background: var(--color-rust);
+}
+
+.cards.product > ul > li:first-child .cards-product-head :is(h2, h3, h4, p) {
+  color: var(--color-light);
+}
+
+.cards.product .cards-product-head :is(h2, h3, h4) {
+  margin: 0;
+  font-size: var(--heading-font-size-l);
+  line-height: 1.3;
+}
+
+.cards.product .cards-product-head p {
+  margin: var(--space-s) 0 0;
+  color: inherit;
+  font-size: var(--body-font-size-m);
+}
+
+.cards.product .cards-product-head p.cards-product-label {
+  margin: var(--space-m) 0 -20px;
+  border: 1px solid light-dark(#d8d8d8, rgb(255 255 255 / 30%));
+  border-radius: 20px;
+  padding: 8px 28px;
+  background: light-dark(var(--color-light), var(--color-card-dark));
+  color: var(--color-rust);
+  font-size: var(--body-font-size-s);
+  font-weight: 500;
+}
+
+.cards.product > ul > li:first-child .cards-product-head p.cards-product-label {
+  color: var(--color-rust);
+}
+
+.cards.product .cards-card-body ul {
+  margin: var(--space-m) 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.cards.product .cards-card-body li {
+  position: relative;
+  margin-bottom: var(--space-s);
+  padding-left: 24px;
+  font-size: var(--body-font-size-s);
+}
+
+.cards.product .cards-card-body li::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 2px;
+  width: 5px;
+  height: 10px;
+  border-right: 1.5px solid var(--color-rust);
+  border-bottom: 1.5px solid var(--color-rust);
+  transform: rotate(45deg);
+}
+
+.cards.product .cards-card-body > p {
+  color: inherit;
+  font-size: var(--body-font-size-m);
+}
+
+.cards.product .cards-card-body > p strong {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.cards.product p.button-container {
+  margin: var(--space-s) 0;
+}
+
+.cards.product a.button.primary {
+  width: 100%;
+}
+
+.cards.product a.button.secondary {
+  min-height: 0;
+  border: 0;
+  border-radius: 4px;
+  padding: 6px 16px;
+  background: #ffd200;
+  color: #252525;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.cards.product a.button:not(.primary, .secondary) {
+  min-height: 0;
+  border: 0;
+  padding: var(--space-s) 0;
+  background: none;
+  color: var(--link-color);
+  font-weight: 400;
+}
+
+.cards.product a.button:not(.primary, .secondary)::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  margin-left: 6px;
+  border-top: 1.5px solid currentcolor;
+  border-right: 1.5px solid currentcolor;
+  transform: rotate(45deg);
+}
+
+.cards.product a.button:not(.primary, .secondary):hover {
+  text-decoration: underline;
+}
+
+@media (width >= 900px) {
+  .cards.product > ul {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 420px));
+    justify-content: center;
+    max-width: none;
+    gap: var(--space-xl);
+  }
+}
+
+/* ==========================================================================
+   Text variant: borderless feature list with small icons
+   ========================================================================== */
+
+.cards.text > ul > li,
+.cards.text > ul > li:hover {
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.cards.text .cards-card-image {
+  padding: var(--space-m) var(--space-m) 0;
+}
+
+.cards.text .cards-card-image img {
+  width: auto;
+  height: 56px;
+  margin: 0;
+}
+
+.cards.text .cards-card-body p {
+  color: inherit;
+}
+
+.cards.text .cards-card-body :is(h3, h4) {
+  font-size: var(--heading-font-size-s);
+}
+
+.cards.text.centered {
+  text-align: center;
+}
+
+.cards.text.centered .cards-card-image img {
+  height: 112px;
+  margin-inline: auto;
+}
+
+@media (width >= 900px) {
+  .cards.text > ul {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+/* Filter variant: goal select above the grid */
+.cards.filter .cards-filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-s) var(--space-m);
+}
+
+.cards.filter .cards-filter-bar label {
+  font-weight: 500;
+}
+
+.cards.filter .cards-filter-select {
+  min-width: 260px;
+  min-height: 44px;
+  border: 1px solid light-dark(#8a8a8a, rgb(255 255 255 / 40%));
+  padding: 0 var(--space-m);
+  background: light-dark(var(--color-light), var(--color-card-dark));
+  color: inherit;
+}
+
+.cards.filter .cards-filter-status {
+  margin: var(--space-m) 0;
+  font-weight: 500;
+}
+
+.cards.filter > ul > li[hidden] {
+  display: none;
+}
+
+@media (width >= 900px) {
+  .cards.filter > ul {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Boxed variant: square bordered panels with free-form content; a picture sits at the bottom edge */
+.cards.boxed > ul > li,
+.cards.boxed > ul > li:hover {
+  border: 1px solid var(--color-gray-200);
+  border-radius: 0;
+  background: var(--color-light);
+  box-shadow: none;
+  text-align: start;
+}
+
+.cards.boxed .cards-card-image {
+  order: 2;
+}
+
+.cards.boxed.centered .cards-card-image {
+  order: 0;
+  padding-top: var(--space-l);
+}
+
+.cards.boxed.centered .cards-card-image img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.cards.boxed .cards-card-image img {
+  width: auto;
+  max-width: 100%;
+  max-height: 140px;
+  margin-inline: auto;
+}
+
+.cards.boxed.tinted .cards-card-image img {
+  max-height: 300px;
+}
+
+/* plain boxed tool cards: illustration tucked into the bottom-right corner */
+@media (width >= 900px) {
+  .cards.boxed:not(.tinted, .centered) > ul > li > article:has(.cards-card-image img:not([src*=".jpg"])) {
+    position: relative;
+    min-height: 150px;
+  }
+
+  .cards.boxed:not(.tinted, .centered) > ul > li > article:has(.cards-card-image img:not([src*=".jpg"])) .cards-card-body {
+    padding-right: 150px;
+  }
+
+  .cards.boxed:not(.tinted, .centered) .cards-card-image:has(img:not([src*=".jpg"])) {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+
+  .cards.boxed:not(.tinted, .centered) .cards-card-image img:not([src*=".jpg"]) {
+    max-height: 110px;
+  }
+}
+
+/* photos fill the card's bottom edge; icons and illustrations stay small */
+.cards.boxed:not(.centered) .cards-card-image img:is([src*=".jpg"], [src*=".jpeg"], [src*=".webp"]) {
+  width: 100%;
+  max-height: none;
+}
+
+.cards.boxed .cards-card-body :is(h3, h4) {
+  margin: var(--space-s) 0;
+}
+
+.cards.boxed .cards-card-body h3:not(:first-child) {
+  margin: var(--space-xs) 0;
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  font-weight: 400;
+}
+
+.cards.boxed .cards-card-body h3:not(:first-child) a:any-link::after {
+  content: ' ›';
+}
+
+.cards.boxed .cards-card-body h4,
+.cards.boxed .cards-card-body h3:not(:first-child, :has(a)) {
+  font-family: var(--body-font-family);
+  font-size: var(--body-font-size-s);
+  font-weight: 700;
+}
+
+.cards.boxed .cards-card-body > :is(h2, h3):first-child {
+  font-size: var(--heading-font-size-m);
+  text-align: center;
+}
+
+.cards.boxed .cards-card-body ul {
+  margin: var(--space-s) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cards.boxed .cards-card-body li {
+  padding: 4px 0;
+  font-size: var(--body-font-size-s);
+}
+
+.cards.boxed .cards-card-body li a:any-link {
+  text-decoration: none;
+}
+
+.cards.boxed .cards-card-body li a:any-link::after {
+  content: ' ›';
+}
+
+/* Mosaic variant: first tile spans two columns with its picture beside the copy; even tiles are brand blue */
+.cards.mosaic > ul > li,
+.cards.mosaic > ul > li:hover {
+  border: 0;
+  border-radius: 0;
+  background: #f3f4f6;
+  box-shadow: none;
+  text-align: start;
+}
+
+.cards.mosaic > ul > li:nth-child(even) {
+  background: linear-gradient(180deg, #006ac3 0%, #0083f1 100%);
+}
+
+.cards.mosaic > ul > li:nth-child(even) :is(h2, h3, h4, p) {
+  color: var(--color-light);
+}
+
+.cards.mosaic .cards-card-image {
+  padding: var(--space-l) var(--space-l) 0;
+}
+
+.cards.mosaic .cards-card-image img {
+  width: auto;
+  max-height: 96px;
+  margin: 0;
+}
+
+.cards.mosaic .cards-card-body {
+  padding: var(--space-m) var(--space-l) var(--space-l);
+}
+
+.cards.mosaic .cards-card-body :is(h3, h4) {
+  font-size: 24px;
+  line-height: 1.25;
+}
+
+.cards.mosaic .cards-card-body p {
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+@media (width >= 900px) {
+  .cards.mosaic > ul {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-m);
+  }
+
+  .cards.mosaic > ul > li:first-child {
+    grid-column: span 2;
+  }
+
+  .cards.mosaic > ul > li:first-child > article {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    align-items: center;
+  }
+
+  .cards.mosaic > ul > li:first-child .cards-card-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    margin: var(--space-m);
+    padding: var(--space-m);
+    background: var(--color-light);
+  }
+
+  .cards.mosaic > ul > li:first-child .cards-card-image img {
+    width: 240px;
+    max-width: 100%;
+    height: auto;
+    max-height: none;
+  }
+
+  .cards.boxed > ul {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Linked cards read as titles, not as blue links */
+.cards .cards-card-link .cards-card-body a:any-link {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.cards .cards-card-link:hover .cards-card-body a:any-link {
+  text-decoration: underline;
+}
+
+/* Icons variant: a small icon beside a single link, in one row */
+.cards.icons > ul > li,
+.cards.icons > ul > li:hover {
+  border: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.cards.icons .cards-card-link {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-s);
+}
+
+.cards.icons .cards-card-image {
+  padding: 0;
+}
+
+.cards.icons .cards-card-image img {
+  width: 40px;
+  height: 40px;
+}
+
+.cards.icons .cards-card-body {
+  padding: 0;
+  text-align: start;
+}
+
+.cards.icons .cards-card-body p {
+  margin: 0;
+}
+
+.cards.icons .cards-card-link .cards-card-body a:any-link {
+  color: var(--link-color);
+}
+
+@media (width >= 900px) {
+  .cards.icons > ul {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  /* longer link lists read in three columns */
+  .cards.icons > ul:has(> li:nth-child(5)) {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 960px;
+    margin-inline: auto;
+  }
+}
+
+/* Showcase variant: wide first tile, photo-backed second tile, accent last tile */
+.cards.showcase > ul > li,
+.cards.showcase > ul > li:hover {
+  position: relative;
+  border: 0;
+  border-radius: 0;
+  background: #f3f4f6;
+  box-shadow: none;
+  text-align: start;
+}
+
+.cards.showcase .cards-card-image {
+  order: 2;
+}
+
+.cards.showcase .cards-card-image img {
+  width: 100%;
+  object-fit: cover;
+}
+
+.cards.showcase > ul > li:nth-child(2) .cards-card-image {
+  position: absolute;
+  inset: 0;
+}
+
+.cards.showcase > ul > li:nth-child(2) .cards-card-image img {
+  height: 100%;
+}
+
+.cards.showcase > ul > li:nth-child(2) .cards-card-body {
+  position: relative;
+  min-height: 320px;
+  background: linear-gradient(90deg, rgb(0 0 0 / 60%) 0%, rgb(0 0 0 / 0%) 80%);
+}
+
+.cards.showcase > ul > li:nth-child(2) .cards-card-body :is(h2, h3, h4, p, a) {
+  color: var(--color-light);
+}
+
+.cards.showcase > ul > li:last-child:not(:nth-child(2)) {
+  background: var(--color-gold);
+}
+
+@media (width >= 900px) {
+  .cards.showcase > ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cards.showcase > ul > li:first-child {
+    grid-column: span 2;
+  }
+
+  .cards.showcase > ul > li:first-child > article {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .cards.showcase > ul > li:first-child .cards-card-image img {
+    height: 200px;
+  }
+
+  /* third tile runs down beside the second and fourth; phone shots are cropped from the top */
+  .cards.showcase > ul > li:nth-child(3):not(:last-child) {
+    grid-column: 2;
+    grid-row: span 2;
+  }
+
+  .cards.showcase > ul > li:nth-child(2) .cards-card-body {
+    min-height: 450px;
+  }
+
+  .cards.showcase > ul > li:nth-child(n + 3) .cards-card-image img {
+    max-height: 500px;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  .cards.showcase > ul > li:nth-child(4) .cards-card-image img {
+    max-height: 170px;
+  }
+}
+
+/* Boxed modifiers: tinted = soft blue panels without borders; two-up = two per row */
+.cards.boxed.tinted > ul > li,
+.cards.boxed.tinted > ul > li:hover {
+  border: 0;
+  background: #eaf4fc;
+}
+
+.cards.boxed.tinted .cards-card-body > :is(h2, h3):first-child {
+  text-align: start;
+}
+
+@media (width >= 900px) {
+  .cards.boxed.two-up > ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tiles variant: picture fills the tile, heading and copy sit on top; tiles without a picture are brand blue */
+.cards.tiles > ul > li,
+.cards.tiles > ul > li:hover {
+  position: relative;
+  min-height: 240px;
+  border: 0;
+  border-radius: 0;
+  background: var(--color-rust);
+  box-shadow: none;
+  text-align: start;
+}
+
+.cards.tiles .cards-card-image {
+  position: absolute;
+  inset: 0;
+}
+
+.cards.tiles .cards-card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cards.tiles .cards-card-body {
+  position: relative;
+  background: linear-gradient(180deg, rgb(0 0 0 / 45%) 0%, rgb(0 0 0 / 0%) 70%);
+}
+
+.cards.tiles .cards-card-body :is(h3, h4, p),
+.cards.tiles .cards-card-link .cards-card-body a:any-link {
+  color: var(--color-light);
+}
+
+.cards.tiles .cards-card-body :is(h3, h4) {
+  font-size: var(--heading-font-size-s);
+  font-weight: 600;
+}
+
+.cards.tiles .cards-card-body :is(h3, h4)::after {
+  content: ' ›';
+}
+
+@media (width >= 900px) {
+  .cards.tiles > ul {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.cards.boxed.centered > ul > li {
+  text-align: center;
+}
+
+@media (width >= 900px) {
+  .cards.boxed > ul:has(> li:nth-child(2):last-child) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.section.center .cards.filter .cards-filter-bar {
+  flex-direction: column;
+  align-items: center;
+}
+
+.section.center .cards.filter .cards-filter-status {
+  text-align: start;
+}
+
+/* Headed modifier: the card's first heading sits in a brand-blue bar */
+.cards.headed > ul > li,
+.cards.headed > ul > li:hover {
+  border: 1px solid var(--color-gray-200);
+  border-radius: 0;
+  background: var(--color-light);
+}
+
+.cards.headed .cards-card-body {
+  padding: 0 var(--space-l) var(--space-l);
+  text-align: start;
+}
+
+.cards.headed .cards-card-body > :is(h3, h4):first-child {
+  margin: 0 calc(-1 * var(--space-l)) var(--space-m);
+  padding: var(--space-m) var(--space-l);
+  background: var(--color-rust);
+  color: var(--color-light);
+  font-size: var(--heading-font-size-s);
+  text-align: center;
+}
+
+/* Plain modifier: no panel, image then copy (editorial grids) */
+.cards.plain > ul > li,
+.cards.plain > ul > li:hover {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.cards.plain .cards-card-image img {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+}
+
+.cards.plain .cards-card-body {
+  padding: var(--space-s) 0 0;
+}
+
+.cards.plain .cards-card-body :is(h3, h4) {
+  font-size: var(--heading-font-size-m);
+}
+
+/* Rows variant: thumbnail beside the copy, one article per row */
+.cards.rows > ul {
+  grid-template-columns: 1fr;
+  max-width: 760px;
+  margin-inline: 0;
+}
+
+.cards.rows > ul > li,
+.cards.rows > ul > li:hover {
+  border: 0;
+  border-bottom: 1px solid var(--color-gray-200);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+}
+
+.cards.rows .cards-card-link,
+.cards.rows > ul > li > article:not(:has(> .cards-card-link)) {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr);
+  gap: var(--space-m);
+  align-items: start;
+  padding-bottom: var(--space-m);
+}
+
+.cards.rows .cards-card-image img {
+  width: 120px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.cards.rows .cards-card-body {
+  padding: 0;
+}
+
+.cards.rows .cards-card-body :is(h3, h4) {
+  font-size: var(--heading-font-size-s);
+}
+
+@media (width >= 900px) {
+  .cards.rows .cards-card-link,
+  .cards.rows > ul > li > article:not(:has(> .cards-card-link)) {
+    grid-template-columns: 200px minmax(0, 1fr);
+  }
+
+  .cards.rows .cards-card-image img {
+    width: 200px;
+    height: 130px;
   }
 }

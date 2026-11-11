@@ -19,7 +19,20 @@ export default function decorate(block) {
     block.classList.add('no-image');
   }
 
-  const h1 = block.querySelector('h1');
+  block.querySelectorAll('p.button-container + p.button-container').forEach((p) => {
+    const prev = p.previousElementSibling;
+    const group = prev.parentElement.classList.contains('hero-buttons') ? prev.parentElement : null;
+    if (group) {
+      group.append(p);
+      return;
+    }
+    const wrap = document.createElement('div');
+    wrap.className = 'hero-buttons';
+    prev.replaceWith(wrap);
+    wrap.append(prev, p);
+  });
+
+  const h1 = block.querySelector('h1, h2');
   if (!h1) return;
 
   // Find the first <p> that appears before the <h1> in the DOM and mark it as a tagline

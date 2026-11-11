@@ -1,4 +1,5 @@
 /* Tabs block – Heritage Elite, mobile-first */
+/* stylelint-disable no-descending-specificity -- variants intentionally override base card/slide/panel rules */
 
 .tabs {
   color: var(--text-color);
@@ -26,21 +27,18 @@ main .section .tabs {
 /* Section header above tabs */
 .tabs .tabs-wrapper .section h2 {
   font-family: var(--font-family-serif);
-  font-size: 2.5rem;
+  font-size: var(--heading-font-size-xl);
   color: var(--color-rust);
   margin: 0;
   text-align: center;
-  letter-spacing: -0.02em;
 }
 
 .tabs .tabs-wrapper .section p {
-  font-family: var(--font-family-serif);
-  font-size: 1.1rem;
+  font-size: var(--body-font-size-m);
   color: light-dark(var(--color-ink), var(--color-muted));
-  opacity: 0.7;
   margin-top: 20px;
   text-align: center;
-  line-height: 1.65;
+  line-height: var(--body-line-height);
 }
 
 /* Tab list */
@@ -71,13 +69,11 @@ main .section .tabs {
   -webkit-text-fill-color: currentcolor;
   cursor: pointer;
   font-family: var(--body-font-family);
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  font-size: var(--body-font-size-m);
+  font-weight: 500;
   margin: 0;
   padding: 16px 18px;
-  opacity: 0.5;
+  opacity: 1;
   transition: opacity 0.35s, color 0.35s, border-color 0.35s;
   white-space: nowrap;
 }
@@ -123,7 +119,7 @@ main .section .tabs {
 .tabs .tab .section h2 {
   font-family: var(--font-family-serif);
   font-weight: 500;
-  font-size: var(--heading-font-size-m);
+  font-size: var(--heading-font-size-xl);
   color: light-dark(var(--color-ink), var(--color-parchment));
 }
 
@@ -131,19 +127,17 @@ main .section .tabs {
    .tabs .tabs-wrapper .section h2/p rules target ALL sections inside tabs-wrapper
    (including tab panels), but they were designed only for an optional intro-header
    section above the tab list. Reset them here for actual tab panel content. */
-.tabs .tab .section p {
+.tabs .tab .section > .default-content-wrapper p {
   font-family: var(--body-font-family);
   font-size: var(--body-font-size-m);
   opacity: 1;
-  text-align: left;
   color: inherit;
   margin-top: 0;
-  line-height: 1.65;
+  line-height: var(--body-line-height);
 }
 
-.tabs .tab .section h2,
-.tabs .tab .section h3 {
-  text-align: left;
+.tabs .tab .section > .default-content-wrapper :is(h2, h3) {
+  text-align: center;
   color: light-dark(var(--color-ink), var(--color-parchment));
   letter-spacing: normal;
 }
@@ -157,14 +151,14 @@ main .section .tabs {
   margin-block: var(--space-s);
 }
 
-/* Columns inside tabs — stacked vertically, video on top */
-.tabs .columns > div {
+/* Columns with a video inside tabs — stacked vertically, video on top */
+.tabs .columns:has(.embed) > div {
   flex-direction: column;
   align-items: center;
   gap: var(--space-l);
 }
 
-.tabs .columns > div > div {
+.tabs .columns:has(.embed) > div > div {
   flex: unset;
   order: unset;
   width: 100%;
@@ -210,17 +204,6 @@ main .section .tabs {
 }
 
 @media (width >= 600px) {
-  .tabs .tabs-wrapper .section h2 {
-    font-size: 3.2rem;
-    letter-spacing: -0.02em;
-  }
-
-  .tabs .tabs-wrapper .section p {
-    font-size: 1.3rem;
-  }
-
-  /* Re-assert body font size for tab panel content — the rule above wins
-     cascade order over the base reset when at tablet+ breakpoint */
   .tabs .tab .section p {
     font-size: var(--body-font-size-m);
   }
@@ -240,15 +223,12 @@ main .section .tabs {
   }
 
   .tabs .tabs-list button {
-    padding: 22px 45px;
+    max-width: 340px;
+    padding: 16px 32px;
+    white-space: normal;
   }
 
-  .tabs .tabs-wrapper .section h2 {
-    font-size: 3.8rem;
-    letter-spacing: -0.025em;
-  }
-
-  .tabs .columns > div > div {
+  .tabs .columns:has(.embed) > div > div {
     max-width: 800px;
   }
 

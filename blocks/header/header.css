@@ -1328,3 +1328,517 @@ header nav .nav-tools .nav-language-menu a:focus-visible {
     max-width: 1264px;
   }
 }
+
+
+/* ==========================================================================
+   Layered header (nav-layout: layered)
+   Utility bar, brand band, then either a sections row (no sub-nav) or the
+   sections inline in the band plus a contextual sub-nav row (has-subnav).
+   Bands are painted on the nav itself so every row shares one content container.
+   ========================================================================== */
+header nav.nav-layered {
+  --layered-container: 1170px;
+  --layered-gutter: max(var(--space-m), calc((100% - var(--layered-container)) / 2));
+  --layered-global-bg: var(--color-rust-bright);
+  --layered-band-bg: var(--color-rust);
+  --layered-band-fg: var(--color-light);
+  --layered-subnav-bg: light-dark(#f3f3f3, var(--color-card-dark));
+  --layered-cta-bg: var(--color-gold);
+  --layered-cta-fg: var(--color-obsidian);
+  --layered-band-height: 60px;
+
+  display: grid;
+  grid-template:
+    'brand tools hamburger' var(--layered-band-height)
+    'sections sections sections' auto / minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  max-width: none;
+  min-height: 0;
+  margin: 0;
+  padding: 0 0 0 var(--space-m);
+  background: var(--layered-band-bg);
+  color: var(--layered-band-fg);
+}
+
+header nav.nav-layered.has-subnav .nav-subnav {
+  display: none;
+}
+
+header:has(nav.nav-layered) {
+  height: var(--layered-header-height, 60px);
+}
+
+header .nav-wrapper:has(nav.nav-layered) {
+  border-bottom: 0;
+  background: transparent;
+}
+
+header nav.nav-layered .nav-global {
+  display: none;
+  grid-area: global;
+}
+
+header nav.nav-layered .nav-global .default-content-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+header nav.nav-layered .nav-global ul {
+  display: flex;
+  align-items: center;
+  gap: var(--space-l);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+header nav.nav-layered .nav-global li,
+header nav.nav-layered .nav-global p {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+header nav.nav-layered .nav-global a:any-link,
+header nav.nav-layered .nav-global a.button:any-link {
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--layered-band-fg);
+  font-size: inherit;
+  font-weight: 400;
+  text-decoration: none;
+  text-transform: none;
+}
+
+header nav.nav-layered .nav-global a:hover {
+  text-decoration: underline;
+}
+
+/* brand */
+header nav.nav-layered .nav-brand {
+  grid-area: brand;
+  justify-content: flex-start;
+  justify-self: start;
+  width: auto;
+  padding: 0;
+  color: var(--layered-band-fg);
+}
+
+header nav.nav-layered .nav-brand a:any-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-m);
+  color: var(--layered-band-fg);
+  font-family: var(--body-font-family);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-decoration: none;
+}
+
+header nav.nav-layered .nav-brand :is(img, svg) {
+  width: 34px;
+  height: 40px;
+}
+
+/* tools: search, links, sign-in CTA */
+header nav.nav-layered .nav-tools {
+  grid-area: tools;
+  gap: var(--space-l);
+  padding: 0;
+}
+
+header nav.nav-layered .nav-tools .default-content-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-l);
+  height: 100%;
+}
+
+header nav.nav-layered .nav-tools a:any-link:not(.nav-auth-link) {
+  color: var(--layered-band-fg);
+  font-size: var(--body-font-size-m);
+  font-weight: 400;
+  text-decoration: none;
+}
+
+header nav.nav-layered .nav-tools .nav-search-input {
+  display: none;
+}
+
+header nav.nav-layered .nav-tools .nav-search-submit {
+  position: static;
+  transform: none;
+  padding: var(--space-xs);
+}
+
+header nav.nav-layered .nav-tools .icon img {
+  width: 22px;
+  height: 22px;
+  filter: brightness(0) invert(1);
+}
+
+header nav.nav-layered .nav-tools p:has(a:not(.nav-auth-link)) {
+  display: none;
+}
+
+header nav.nav-layered .nav-tools a.button.nav-auth-link:any-link {
+  display: inline-flex;
+  align-self: stretch;
+  min-height: var(--layered-band-height);
+  border: 0;
+  border-radius: 0;
+  padding: 0 var(--space-m);
+  background: var(--layered-cta-bg);
+  color: var(--layered-cta-fg);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+header nav.nav-layered .nav-tools a.button.nav-auth-link:any-link:hover {
+  background: var(--layered-cta-bg);
+  color: var(--layered-cta-fg);
+  text-decoration: underline;
+}
+
+header nav.nav-layered .nav-hamburger {
+  grid-area: hamburger;
+  align-self: stretch;
+  height: auto;
+}
+
+header nav.nav-layered .nav-hamburger button {
+  width: var(--layered-band-height);
+  height: 100%;
+  border-radius: 0;
+  background: var(--layered-global-bg);
+  color: var(--layered-band-fg);
+}
+
+header nav.nav-layered .nav-hamburger-icon,
+header nav.nav-layered .nav-hamburger-icon::before,
+header nav.nav-layered .nav-hamburger-icon::after {
+  width: 26px;
+  margin-inline: auto;
+}
+
+/* sections: mobile menu panel */
+header nav.nav-layered .nav-sections {
+  grid-area: sections;
+  margin-left: calc(-1 * var(--space-m));
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+header nav.nav-layered .nav-sections a.button:any-link {
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  font-weight: 500;
+}
+
+/* contextual sub-nav: optional bold label paragraph, then the links */
+header nav.nav-layered .nav-subnav {
+  grid-area: subnav;
+  height: 100%;
+  margin-left: calc(-1 * var(--space-m));
+  overflow: hidden;
+  background: var(--layered-subnav-bg);
+  color: var(--text-color);
+}
+
+header nav.nav-layered .nav-subnav .default-content-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-l);
+  height: 100%;
+  padding: 0 var(--space-m);
+}
+
+header nav.nav-layered .nav-subnav .default-content-wrapper > p {
+  flex: 0 0 auto;
+  margin: 0;
+  padding-right: var(--space-l);
+  border-right: 1px solid var(--color-gray-200);
+  font-weight: 700;
+}
+
+header nav.nav-layered .nav-subnav ul {
+  display: flex;
+  align-items: center;
+  gap: var(--space-l);
+  height: 100%;
+  overflow-x: auto;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  scrollbar-width: none;
+  white-space: nowrap;
+}
+
+header nav.nav-layered .nav-subnav li,
+header nav.nav-layered .nav-subnav li > p {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+header nav.nav-layered .nav-subnav a:any-link,
+header nav.nav-layered .nav-subnav a.button:any-link {
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--text-color);
+  font-size: var(--body-font-size-m);
+  font-weight: inherit;
+  text-decoration: none;
+  text-transform: none;
+}
+
+header nav.nav-layered .nav-subnav a:hover {
+  color: var(--color-rust);
+  text-decoration: underline;
+}
+
+@media (width >= 900px) {
+  header nav.nav-layered {
+    --layered-band-height: 70px;
+
+    grid-template:
+      'global global global' 30px
+      'brand . tools' var(--layered-band-height)
+      'brand sections sections' 60px / auto minmax(0, 1fr) auto;
+    padding: 0 var(--layered-gutter);
+    background:
+      linear-gradient(var(--layered-global-bg), var(--layered-global-bg)) top / 100% 30px no-repeat,
+      linear-gradient(var(--layered-band-bg), var(--layered-band-bg)) 0 30px / 100% var(--layered-band-height) no-repeat,
+      var(--background-color);
+  }
+
+  header:has(nav.nav-layered) {
+    --layered-header-height: 160px;
+  }
+
+  header nav.nav-layered .nav-global {
+    display: block;
+  }
+
+  header nav.nav-layered .nav-hamburger {
+    display: none;
+  }
+
+  /* no sub-nav: large shield logo hangs into the sections row */
+  header nav.nav-layered:not(.has-subnav) .nav-brand {
+    align-self: start;
+    padding-top: 14px;
+  }
+
+  header nav.nav-layered:not(.has-subnav) .nav-brand a:any-link {
+    align-items: flex-start;
+    gap: 40px;
+  }
+
+  header nav.nav-layered:not(.has-subnav) .nav-brand :is(img, svg) {
+    width: 76px;
+    height: 98px;
+  }
+
+  header nav.nav-layered:not(.has-subnav) .nav-brand a:any-link > :not(picture, img, svg) {
+    margin-top: 2px;
+  }
+
+  header nav.nav-layered .nav-tools .nav-search-input {
+    display: block;
+    width: 160px;
+    border: 0;
+    border-bottom: 1px solid var(--layered-band-fg);
+    border-radius: 0;
+    padding: 6px 0 6px 36px;
+    background: transparent;
+    color: var(--layered-band-fg);
+    font-size: 20px;
+    font-weight: 300;
+  }
+
+  header nav.nav-layered .nav-tools .nav-search-input::placeholder {
+    color: var(--layered-band-fg);
+    opacity: 0.9;
+  }
+
+  header nav.nav-layered .nav-tools .nav-search-form {
+    position: relative;
+  }
+
+  header nav.nav-layered .nav-tools .nav-search-submit {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    transform: translateY(-50%);
+  }
+
+  header nav.nav-layered .nav-tools p:has(a:not(.nav-auth-link)) {
+    display: block;
+  }
+
+  header nav.nav-layered .nav-tools a.button.nav-auth-link:any-link {
+    align-self: center;
+    min-height: 42px;
+    padding: 0 var(--space-m);
+    font-size: var(--body-font-size-m);
+    text-transform: none;
+  }
+
+  header nav.nav-layered .nav-sections {
+    display: flex;
+    justify-content: flex-end;
+    align-self: stretch;
+    margin: 0;
+    border-bottom: 1px solid var(--color-gray-200);
+    background: transparent;
+  }
+
+  header nav.nav-layered .nav-sections .default-content-wrapper > ul {
+    justify-content: flex-end;
+    gap: 30px;
+  }
+
+  header nav.nav-layered .nav-sections .default-content-wrapper > ul > li > p {
+    display: flex;
+    align-items: center;
+    min-height: 58px;
+    margin: 0;
+    font-size: var(--body-font-size-m);
+    font-weight: 400;
+  }
+
+  header nav.nav-layered .nav-sections .default-content-wrapper > ul > li > p > :is(a, a.button):any-link {
+    padding: 0;
+    color: var(--color-rust);
+    font-weight: 400;
+  }
+
+  /* with sub-nav: sections sit centred in the band, sub-nav row below */
+  header nav.nav-layered.has-subnav {
+    --layered-band-height: 64px;
+
+    grid-template:
+      'global global global' 30px
+      'brand sections tools' var(--layered-band-height)
+      'subnav subnav subnav' 66px / minmax(0, 1fr) auto minmax(0, 1fr);
+    background:
+      linear-gradient(var(--layered-global-bg), var(--layered-global-bg)) top / 100% 30px no-repeat,
+      linear-gradient(var(--layered-band-bg), var(--layered-band-bg)) 0 30px / 100% var(--layered-band-height) no-repeat,
+      linear-gradient(var(--layered-subnav-bg), var(--layered-subnav-bg)) 0 calc(30px + var(--layered-band-height)) / 100% 66px no-repeat,
+      var(--background-color);
+  }
+
+  header nav.nav-layered.has-subnav .nav-subnav {
+    display: block;
+  }
+
+  header nav.nav-layered.has-subnav .nav-sections {
+    justify-content: center;
+    border: 0;
+  }
+
+  header nav.nav-layered.has-subnav .nav-sections .default-content-wrapper > ul {
+    gap: var(--space-l);
+  }
+
+  header nav.nav-layered.has-subnav .nav-sections .default-content-wrapper > ul > li > p {
+    min-height: var(--layered-band-height);
+    font-weight: 500;
+  }
+
+  header nav.nav-layered.has-subnav .nav-sections .default-content-wrapper > ul > li > p > :is(a, a.button):any-link {
+    padding: 0 var(--space-m);
+    color: var(--layered-band-fg);
+    font-weight: 500;
+  }
+
+  header nav.nav-layered.has-subnav .nav-sections .nav-drop {
+    color: var(--layered-band-fg);
+  }
+
+  header nav.nav-layered.has-subnav .nav-sections .nav-drop[aria-expanded='true'] {
+    background: var(--layered-global-bg);
+  }
+
+  header nav.nav-layered.has-subnav .nav-sections .nav-drop > ul {
+    color: var(--text-color);
+  }
+
+  header nav.nav-layered.has-subnav .nav-tools .nav-search-input {
+    display: none;
+  }
+
+  header nav.nav-layered.has-subnav .nav-tools .nav-search-submit {
+    position: static;
+    transform: none;
+  }
+
+  header nav.nav-layered.has-subnav .nav-tools a.button.nav-auth-link:any-link {
+    min-height: 48px;
+    padding: 0 40px;
+  }
+
+  header nav.nav-layered .nav-subnav {
+    margin: 0;
+    background: transparent;
+  }
+
+  header nav.nav-layered .nav-subnav .default-content-wrapper {
+    padding: 0;
+  }
+}
+
+/* plain-text dropdown group label rendered as a disclosure button */
+header nav .nav-drop-label {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+header nav .nav-drop-label:focus-visible {
+  outline: 2px solid currentcolor;
+  outline-offset: 2px;
+}
+
+/* skip link: visible only on keyboard focus */
+header .nav-skip-link {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  padding: var(--space-s) var(--space-m);
+  background: var(--color-light);
+  color: var(--color-rust);
+  transform: translateY(-120%);
+}
+
+header .nav-skip-link:focus {
+  transform: none;
+}

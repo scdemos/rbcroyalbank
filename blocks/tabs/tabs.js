@@ -31,7 +31,20 @@ function collectTabSections(currSection) {
 function findTabGroups(main) {
   const sections = [...main.querySelectorAll('.section[data-tab-id]')]
     .filter((s) => !s.closest('.tabs-wrapper'));
-  return sections.length ? [sections] : [];
+  const groups = [];
+  let group = [];
+
+  sections.forEach((section) => {
+    const previous = group[group.length - 1];
+    if (previous && section.previousElementSibling !== previous) {
+      groups.push(group);
+      group = [];
+    }
+    group.push(section);
+  });
+
+  if (group.length) groups.push(group);
+  return groups;
 }
 
 function updateTabState(tabDefs, selectedId, tabButtons, tabPanels) {

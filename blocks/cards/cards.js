@@ -90,8 +90,11 @@ function decorateBento(block) {
     }
 
     // Find and mark the tag/label (first <p> that looks like a category tag)
+    // only a paragraph above the card heading is a tag
     const firstP = li.querySelector('p');
-    if (firstP && !firstP.querySelector('picture') && !firstP.classList.contains('button-container')) {
+    const heading = li.querySelector('h2, h3, h4');
+    const beforeHeading = !heading || (firstP?.compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING);
+    if (firstP && beforeHeading && !firstP.querySelector('picture') && !firstP.classList.contains('button-container')) {
       firstP.classList.add('cards-card-tag');
     }
 
@@ -110,8 +113,10 @@ function decorateBento(block) {
 
 /**
  * Decorate regular cards (authored rows with image + body).
+ * @param {Element} block
+ * @param {{ keepButtons?: boolean }} [opts] keepButtons: don't turn the card into one link
  */
-function decorateDefault(block) {
+function decorateDefault(block, opts = {}) {
   const ul = createTag('ul');
 
   [...block.children].forEach((row) => {
@@ -120,7 +125,9 @@ function decorateDefault(block) {
 
     const content = li.firstElementChild;
     if (content?.children?.length > 1) {
-      const imageEl = [...content.children].find((el) => el.querySelector('picture'));
+      // a linked picture (badge, logo) is content, not the card image
+      const withPicture = [...content.children].filter((el) => el.querySelector('picture'));
+      const imageEl = withPicture.find((el) => !el.querySelector('a')) || withPicture[0];
       if (imageEl) {
         const picture = imageEl.querySelector('picture');
         const imageDiv = createTag('div', { class: 'cards-card-image' });
@@ -138,7 +145,7 @@ function decorateDefault(block) {
       });
     }
 
-    const linkEl = li.querySelector('.cards-card-image a[href]') || li.querySelector('.cards-card-body a[href]');
+    const linkEl = !opts.keepButtons && (li.querySelector('.cards-card-image a[href]') || li.querySelector('.cards-card-body a[href]'));
     if (linkEl) {
       const wrapper = createTag('div', { class: 'cards-card-link' });
       while (li.firstChild) wrapper.append(li.firstChild);
@@ -167,11 +174,76 @@ function decorateDefault(block) {
   block.replaceChildren(ul);
 }
 
+/**
+ * Product cards: everything before the first list forms a coloured card head;
+ * a trailing plain-text paragraph in the head becomes its pill label.
+ */
+function decorateProduct(block) {
+  decorateDefault(block, { keepButtons: true });
+  block.querySelectorAll('.cards-card-body').forEach((body) => {
+    const list = body.querySelector(':scope > ul');
+    if (!list) return;
+    const head = createTag('div', { class: 'cards-product-head' });
+    while (body.firstElementChild && body.firstElementChild !== list) {
+      head.append(body.firstElementChild);
+    }
+    const last = head.lastElementChild;
+    if (head.children.length > 2 && last?.tagName === 'P' && !last.querySelector('a, picture')) {
+      last.classList.add('cards-product-label');
+    }
+    body.prepend(head);
+  });
+}
+
+/**
+ * Filter cards: row 1 (one cell) holds the select label, an optional results prefix
+ * and a list of options, the first meaning "all"; each card row's 2nd cell lists its options.
+ */
+function decorateFilter(block) {
+  const config = block.firstElementChild;
+  const options = [...(config?.querySelectorAll('li') || [])].map((li) => li.textContent.trim());
+  const [label = '', prefix = ''] = [...(config?.querySelectorAll('p') || [])].map((p) => p.textContent.trim());
+  config?.remove();
+  const tags = [...block.children].map((row) => {
+    const cell = row.children[1];
+    if (!cell || cell.querySelector('picture')) return null;
+    cell.remove();
+    return cell.textContent.split(',').map((t) => t.trim()).filter(Boolean);
+  });
+  decorateDefault(block);
+  if (options.length < 2) return;
+
+  const cards = [...block.querySelectorAll(':scope > ul > li')];
+  const id = `cards-filter-${Math.random().toString(36).slice(2, 8)}`;
+  const select = createTag('select', { id, class: 'cards-filter-select' });
+  options.forEach((opt) => select.append(createTag('option', { value: opt }, opt)));
+  const status = createTag('p', { class: 'cards-filter-status', 'aria-live': 'polite' });
+  const apply = () => {
+    const all = select.selectedIndex === 0;
+    cards.forEach((card, i) => {
+      card.hidden = !all && !(tags[i] || []).includes(select.value);
+    });
+    status.textContent = `${prefix} ${select.value}`.trim();
+  };
+  select.addEventListener('change', apply);
+  const bar = createTag('div', { class: 'cards-filter-bar' }, [
+    createTag('label', { for: id }, label), select,
+  ]);
+  block.prepend(bar, status);
+  apply();
+}
+
 export default async function decorate(block) {
   if (block.classList.contains('links')) {
     await decorateLinks(block);
   } else if (block.classList.contains('bento')) {
     decorateBento(block);
+  } else if (block.classList.contains('product')) {
+    decorateProduct(block);
+  } else if (block.classList.contains('filter')) {
+    decorateFilter(block);
+  } else if (['boxed', 'mosaic', 'showcase', 'text'].some((c) => block.classList.contains(c))) {
+    decorateDefault(block, { keepButtons: true });
   } else {
     decorateDefault(block);
   }

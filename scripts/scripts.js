@@ -61,7 +61,12 @@ function applyTheme(theme) {
   document.body.classList.add(`${t}-scheme`);
 }
 
-const isYoutubeLink = (url) => ['youtube.com', 'www.youtube.com', 'youtu.be'].includes(url.hostname);
+const isYoutubeVideoUrl = (url) => {
+  if (url.hostname === 'youtu.be') return /^\/[^/]+\/?$/.test(url.pathname);
+  if (!['youtube.com', 'www.youtube.com'].includes(url.hostname)) return false;
+  return (url.pathname === '/watch' && url.searchParams.has('v'))
+    || /^\/(?:embed|shorts|live)\/[^/]+\/?$/.test(url.pathname);
+};
 
 function replaceParagraphWithBlock(link, block) {
   const parent = link.parentElement;
@@ -84,7 +89,7 @@ function buildEmbedBlocks(main) {
     } catch (e) {
       return;
     }
-    if (!isYoutubeLink(url)) return;
+    if (!isYoutubeVideoUrl(url)) return;
 
     const block = buildBlock('embed', [[anchor.cloneNode(true)]]);
     replaceParagraphWithBlock(anchor, block);
@@ -339,6 +344,8 @@ async function loadEager(doc) {
       datastreamId: 'd73be188-bc37-4ede-a5da-8aa7cd1e343b',
       orgId: '138A07885EE042D20A495CFA@AdobeOrg',
       defaultConsent: 'in',
+      // no demdex.net calls, so no third-party cookies
+      thirdPartyCookiesEnabled: false,
       edgeConfigOverrides: {
         com_adobe_target: {
           propertyToken: '2375354b-3ff1-6d5d-1304-7c38fccd590b',

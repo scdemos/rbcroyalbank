@@ -10,6 +10,7 @@ import { getBlockContext } from '../../scripts/shared.js';
 import {
   getLoginUrl,
   getLogoutUrl,
+  markAuthStarted,
   getDefaultAuthLabel,
   getSessionState,
 } from '../../scripts/shared/auth-api.js';
@@ -221,6 +222,7 @@ function initSearch(tools) {
   const path = link.getAttribute('href') || '/search';
   const q = new URLSearchParams(location.search).get('q') || '';
   const icon = link.querySelector('.icon-search');
+  const label = link.textContent.trim() || 'Search';
 
   const form = document.createElement('form');
   form.className = 'nav-search-form';
@@ -231,16 +233,16 @@ function initSearch(tools) {
   const input = document.createElement('input');
   input.type = 'search';
   input.name = 'q';
-  input.placeholder = 'Search';
+  input.placeholder = label;
   input.value = q;
-  input.setAttribute('aria-label', 'Search');
+  input.setAttribute('aria-label', label);
   input.className = 'nav-search-input';
   input.autocomplete = 'off';
 
   const submit = document.createElement('button');
   submit.type = 'submit';
   submit.className = 'nav-tool nav-search-submit';
-  submit.setAttribute('aria-label', 'Search');
+  submit.setAttribute('aria-label', label);
   if (icon) submit.append(icon.cloneNode(true));
 
   form.onsubmit = (e) => {
@@ -329,10 +331,10 @@ function setAuthUserInfo(link, email) {
 }
 
 async function initAuth(nav, tools) {
-  const loginLabel = getDefaultAuthLabel('login');
-  const logoutLabel = getDefaultAuthLabel('logout');
-
   const loginCandidate = tools.querySelector('a[href*="login" i], a[data-auth-link]');
+  const hasMetaLabel = Boolean(document.querySelector('meta[name="login-label"]'));
+  const loginLabel = (!hasMetaLabel && loginCandidate?.textContent.trim()) || getDefaultAuthLabel('login');
+  const logoutLabel = getDefaultAuthLabel('logout');
   const shouldCreateLink = !loginCandidate;
 
   const desktopLink = loginCandidate || document.createElement('a');
@@ -375,6 +377,7 @@ async function initAuth(nav, tools) {
       link.setAttribute('href', targetHref);
       link.textContent = label;
       link.setAttribute('aria-label', label);
+      link.onclick = () => markAuthStarted(!loggedIn);
       setAuthUserInfo(link, loggedIn ? authState.email : '');
     });
   };
@@ -503,7 +506,7 @@ function toggleMobile(nav, open, body) {
   const isOpen = open === undefined ? nav.getAttribute('aria-expanded') !== 'true' : open;
   body.style.overflowY = isOpen && !DESKTOP.matches ? 'hidden' : '';
   nav.setAttribute('aria-expanded', isOpen);
-  nav.querySelector('.nav-hamburger button')?.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
+  nav.querySelector('.nav-hamburger button')?.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Menu');
   nav.querySelectorAll('.nav-drop').forEach((d) => d.setAttribute('tabindex', DESKTOP.matches ? '0' : '-1'));
 }
 
@@ -541,14 +544,22 @@ export default async function decorate(block) {
   if (!nav.getAttribute('aria-label')) nav.setAttribute('aria-label', 'Main');
   if (!nav.getAttribute('aria-expanded')) nav.setAttribute('aria-expanded', 'false');
 
-  ['brand', 'sections', 'tools'].forEach((c, i) => nav.children[i]?.classList.add(`nav-${c}`));
+  const navSlots = ['nav-global', 'nav-brand', 'nav-sections', 'nav-tools', 'nav-subnav'];
+  const hasNamedSlots = [...nav.children].some((child) => navSlots.some((slot) => child.classList.contains(slot)));
+  if (hasNamedSlots) {
+    nav.classList.toggle('nav-layered', getMetadata('nav-layout') === 'layered');
+    nav.classList.toggle('has-subnav', Boolean(nav.querySelector(':scope > .nav-subnav')));
+  }
+  else ['brand', 'sections', 'tools'].forEach((name, index) => nav.children[index]?.classList.add(`nav-${name}`));
 
   const tools = nav.querySelector('.nav-tools');
-  if (tools && nav.children.length > 3) {
-    [...nav.children].slice(3).forEach((extra) => {
-      while (extra.firstElementChild) tools.append(extra.firstElementChild);
-      extra.remove();
-    });
+  if (tools) {
+    [...nav.children]
+      .filter((child) => !navSlots.some((slot) => child.classList.contains(slot)))
+      .forEach((extra) => {
+        while (extra.firstElementChild) tools.append(extra.firstElementChild);
+        extra.remove();
+      });
   }
 
   nav.querySelector('.nav-brand .button')?.classList.remove('button');
@@ -560,14 +571,37 @@ export default async function decorate(block) {
       li.classList.add('nav-drop');
       li.setAttribute('aria-expanded', 'false');
       li.setAttribute('aria-haspopup', 'true');
+      const label = li.querySelector(':scope > p');
+      // a plain-text group label needs a focusable control
+      if (label && !label.querySelector('a, button')) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'nav-drop-label';
+        btn.append(...label.childNodes);
+        label.append(btn);
+        btn.addEventListener('click', () => {
+          if (DESKTOP.matches) li.setAttribute('aria-expanded', 'true');
+        });
+      }
       decorateMega(li);
       setupDropdown(li);
     }
   });
 
+  // an authored in-page link to #main becomes the skip link
+  const skip = nav.querySelector('a[href="#main"]');
+  if (skip) {
+    const main = document.querySelector('main');
+    if (main && !main.id) main.id = 'main';
+    skip.className = 'nav-skip-link';
+    const holder = skip.closest('li, p');
+    block.prepend(skip);
+    if (holder && !holder.textContent.trim()) holder.remove();
+  }
+
   const hamburger = document.createElement('div');
   hamburger.className = 'nav-hamburger';
-  hamburger.innerHTML = '<button type="button" aria-controls="nav" aria-label="Open navigation"><span class="nav-hamburger-icon"></span></button>';
+  hamburger.innerHTML = '<button type="button" aria-controls="nav" aria-label="Menu"><span class="nav-hamburger-icon"></span></button>';
   let refreshAuthState = null;
   hamburger.onclick = async () => {
     toggleMobile(nav, undefined, body);
